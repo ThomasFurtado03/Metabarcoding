@@ -1,0 +1,284 @@
+(metabarcoding) [tfurtado@narval2 assignment3]$ mkdir raw_reads
+(metabarcoding) [tfurtado@narval2 assignment3]$ mkdir kraken_output
+(metabarcoding) [tfurtado@narval2 assignment3]$ mkdir bracken_output
+(metabarcoding) [tfurtado@narval2 assignment3]$ mkdir biom_tables
+(metabarcoding) [tfurtado@narval2 assignment3]$ mkdir db
+
+(metabarcoding) [tfurtado@narval2 assignment3]$ cd raw_reads
+
+#found URL on ENA website manually, then used wget
+#Omnivore1
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/005/SRR8146935/SRR8146935_1.fastq.gz
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/005/SRR8146935/SRR8146935_2.fastq.gz
+
+#Omnivore2
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/006/SRR8146936/SRR8146936_1.fastq.gz
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/006/SRR8146936/SRR8146936_2.fastq.gz
+
+#Omnivore3
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/008/SRR8146938/SRR8146938_1.fastq.gz
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/008/SRR8146938/SRR8146938_2.fastq.gz
+
+
+#Vegan1
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/004/SRR8146944/SRR8146944_1.fastq.gz
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/004/SRR8146944/SRR8146944_2.fastq.gz
+
+#Vegan2
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/001/SRR8146951/SRR8146951_1.fastq.gz
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/001/SRR8146951/SRR8146951_2.fastq.gz
+
+#Vegan3
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/002/SRR8146952/SRR8146952_1.fastq.gz
+(metabarcoding) [tfurtado@narval2 raw_reads]$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR814/002/SRR8146952/SRR8146952_2.fastq.gz
+
+
+##Collect Kraken db
+
+(metabarcoding) [tfurtado@narval2 assignment3]$ cd db
+(metabarcoding) [tfurtado@narval2 db]$ wget https://genome-idx.s3.amazonaws.com/kraken/k2_standard_08_GB_20251015.tar.gz
+
+(metabarcoding) [tfurtado@narval2 db]$ tar -xvf k2_standard_08_GB_20251015.tar.gz
+
+
+
+##Perform QC
+(metabarcoding) [tfurtado@narval2 db]$ conda install -c bioconda fastqc
+(metabarcoding) [tfurtado@narval2 db]$ mkdir -p /scratch/$USER/assignment3/fastqc
+
+(metabarcoding) [tfurtado@narval2 assignment3]$ fastqc /scratch/$USER/assignment3/raw_reads/*.fastq.gz -o /scratch/$USER/assignment3/fastqc -t 8
+
+#Quick QC
+(metabarcoding) [tfurtado@narval2 fastqc]$ for f in *_fastqc.zip
+> do
+> echo $f
+> unzip -p $f "*summary.txt"
+> echo
+> done
+
+#Quick QC for all samples all show PASS for critical metrics such as Per base sequency quality, Adapter content, Per base N content, Overrepresented sequences etc.
+
+
+
+##Kraken
+
+#Trial run
+#Note: Use of "memory-mapping" option lead to stalled and/or idle runs. Since this was computed on Narval with plentiful RAM, the database handling/preparation this option presents is obsolete regardless
+
+(metabarcoding) [tfurtado@nc20209 raw_reads]$ kraken2 \
+  --db /scratch/$USER/assignment3/db \
+  --confidence 0.15 \
+  --threads 16 \
+  --gzip-compressed \
+  --paired SRR8146935_1.fastq.gz SRR8146935_2.fastq.gz \
+  --output /scratch/$USER/assignment3/kraken_output/SRR8146935.kraken \
+  --report /scratch/$USER/assignment3/kraken_output/SRR8146935.report
+
+#Loop for the rest
+(metabarcoding) [tfurtado@nc20209 raw_reads]$ for sample in SRR8146936 SRR8146938 SRR8146944 SRR8146951 SRR8146952
+> do
+> kraken2 \
+> --db /scratch/$USER/assignment3/db \
+> --confidence 0.15 \
+> --threads 16 \
+> --gzip-compressed \
+> --paired ${sample}_1.fastq.gz ${sample}_2.fastq.gz \
+> --output /scratch/$USER/assignment3/kraken_output/${sample}.kraken \
+> --report /scratch/$USER/assignment3/kraken_output/${sample}.report
+> done
+
+
+
+##Bracken
+
+#Trial run
+(metabarcoding) [tfurtado@narval2 assignment3]$ bracken \
+> -d /scratch/$USER/assignment3/db \
+> -i /scratch/$USER/assignment3/kraken_output/SRR8146935.report \
+> -o /scratch/$USER/assignment3/bracken_output/SRR8146935.bracken \
+> -r 150 \
+> -l S
+
+#Analyze
+(metabarcoding) [tfurtado@narval2 assignment3]$ ls bracken_output
+(metabarcoding) [tfurtado@narval2 assignment3]$ head bracken_output/SRR8146935.bracken
+
+#Perform for all
+(metabarcoding) [tfurtado@narval2 assignment3]$ for sample in SRR8146935 SRR8146936 SRR8146938 SRR8146944 SRR8146951 SRR8146952
+do
+bracken \
+-d /scratch/$USER/assignment3/db \
+-i /scratch/$USER/assignment3/kraken_output/${sample}.report \
+-o /scratch/$USER/assignment3/bracken_output/${sample}.bracken \
+-w /scratch/$USER/assignment3/bracken_output/${sample}.bracken.report \
+-r 150 \
+-l S
+done
+
+
+##Kraken-biom
+
+(metabarcoding) [tfurtado@narval2 assignment3]$ kraken-biom bracken_output/*.bracken.report \
+> -o biom_tables/kraken.biom \
+> --fmt json
+
+#Inspection
+(metabarcoding) [tfurtado@narval2 assignment3]$ ls biom_tables
+(metabarcoding) [tfurtado@narval2 assignment3]$ head biom_tables/kraken.biom
+
+#
+#Downloaded outputs of interest to local system
+
+scp tfurtado@narval.computecanada.ca:/scratch/$USER/assignment3/biom_tables/kraken.biom .
+
+scp tfurtado@narval.computecanada.ca:/scratch/$USER/assignment3/kraken_output/*.report .
+
+scp tfurtado@narval.computecanada.ca:/scratch/$USER/assignment3/bracken_output/*.bracken.report .
+
+
+===================================================================================================================
+##### QC RESULTS (IF NEEDED)
+SRR8146935_1_fastqc.zip
+PASS    Basic Statistics        SRR8146935_1.fastq.gz
+PASS    Per base sequence quality       SRR8146935_1.fastq.gz
+PASS    Per sequence quality scores     SRR8146935_1.fastq.gz
+WARN    Per base sequence content       SRR8146935_1.fastq.gz
+WARN    Per sequence GC content SRR8146935_1.fastq.gz
+PASS    Per base N content      SRR8146935_1.fastq.gz
+WARN    Sequence Length Distribution    SRR8146935_1.fastq.gz
+PASS    Sequence Duplication Levels     SRR8146935_1.fastq.gz
+PASS    Overrepresented sequences       SRR8146935_1.fastq.gz
+PASS    Adapter Content SRR8146935_1.fastq.gz
+
+SRR8146935_2_fastqc.zip
+PASS    Basic Statistics        SRR8146935_2.fastq.gz
+PASS    Per base sequence quality       SRR8146935_2.fastq.gz
+PASS    Per sequence quality scores     SRR8146935_2.fastq.gz
+WARN    Per base sequence content       SRR8146935_2.fastq.gz
+WARN    Per sequence GC content SRR8146935_2.fastq.gz
+PASS    Per base N content      SRR8146935_2.fastq.gz
+WARN    Sequence Length Distribution    SRR8146935_2.fastq.gz
+PASS    Sequence Duplication Levels     SRR8146935_2.fastq.gz
+PASS    Overrepresented sequences       SRR8146935_2.fastq.gz
+PASS    Adapter Content SRR8146935_2.fastq.gz
+
+SRR8146936_1_fastqc.zip
+PASS    Basic Statistics        SRR8146936_1.fastq.gz
+PASS    Per base sequence quality       SRR8146936_1.fastq.gz
+PASS    Per sequence quality scores     SRR8146936_1.fastq.gz
+WARN    Per base sequence content       SRR8146936_1.fastq.gz
+WARN    Per sequence GC content SRR8146936_1.fastq.gz
+PASS    Per base N content      SRR8146936_1.fastq.gz
+PASS    Sequence Length Distribution    SRR8146936_1.fastq.gz
+WARN    Sequence Duplication Levels     SRR8146936_1.fastq.gz
+PASS    Overrepresented sequences       SRR8146936_1.fastq.gz
+PASS    Adapter Content SRR8146936_1.fastq.gz
+
+SRR8146936_2_fastqc.zip
+PASS    Basic Statistics        SRR8146936_2.fastq.gz
+PASS    Per base sequence quality       SRR8146936_2.fastq.gz
+PASS    Per sequence quality scores     SRR8146936_2.fastq.gz
+WARN    Per base sequence content       SRR8146936_2.fastq.gz
+WARN    Per sequence GC content SRR8146936_2.fastq.gz
+PASS    Per base N content      SRR8146936_2.fastq.gz
+PASS    Sequence Length Distribution    SRR8146936_2.fastq.gz
+PASS    Sequence Duplication Levels     SRR8146936_2.fastq.gz
+PASS    Overrepresented sequences       SRR8146936_2.fastq.gz
+PASS    Adapter Content SRR8146936_2.fastq.gz
+
+SRR8146938_1_fastqc.zip
+PASS    Basic Statistics        SRR8146938_1.fastq.gz
+PASS    Per base sequence quality       SRR8146938_1.fastq.gz
+PASS    Per sequence quality scores     SRR8146938_1.fastq.gz
+WARN    Per base sequence content       SRR8146938_1.fastq.gz
+PASS    Per sequence GC content SRR8146938_1.fastq.gz
+PASS    Per base N content      SRR8146938_1.fastq.gz
+WARN    Sequence Length Distribution    SRR8146938_1.fastq.gz
+PASS    Sequence Duplication Levels     SRR8146938_1.fastq.gz
+PASS    Overrepresented sequences       SRR8146938_1.fastq.gz
+PASS    Adapter Content SRR8146938_1.fastq.gz
+
+SRR8146938_2_fastqc.zip
+PASS    Basic Statistics        SRR8146938_2.fastq.gz
+PASS    Per base sequence quality       SRR8146938_2.fastq.gz
+PASS    Per sequence quality scores     SRR8146938_2.fastq.gz
+WARN    Per base sequence content       SRR8146938_2.fastq.gz
+PASS    Per sequence GC content SRR8146938_2.fastq.gz
+PASS    Per base N content      SRR8146938_2.fastq.gz
+WARN    Sequence Length Distribution    SRR8146938_2.fastq.gz
+PASS    Sequence Duplication Levels     SRR8146938_2.fastq.gz
+PASS    Overrepresented sequences       SRR8146938_2.fastq.gz
+PASS    Adapter Content SRR8146938_2.fastq.gz
+
+SRR8146944_1_fastqc.zip
+PASS    Basic Statistics        SRR8146944_1.fastq.gz
+PASS    Per base sequence quality       SRR8146944_1.fastq.gz
+PASS    Per sequence quality scores     SRR8146944_1.fastq.gz
+WARN    Per base sequence content       SRR8146944_1.fastq.gz
+WARN    Per sequence GC content SRR8146944_1.fastq.gz
+PASS    Per base N content      SRR8146944_1.fastq.gz
+WARN    Sequence Length Distribution    SRR8146944_1.fastq.gz
+WARN    Sequence Duplication Levels     SRR8146944_1.fastq.gz
+PASS    Overrepresented sequences       SRR8146944_1.fastq.gz
+PASS    Adapter Content SRR8146944_1.fastq.gz
+
+SRR8146944_2_fastqc.zip
+PASS    Basic Statistics        SRR8146944_2.fastq.gz
+PASS    Per base sequence quality       SRR8146944_2.fastq.gz
+PASS    Per sequence quality scores     SRR8146944_2.fastq.gz
+WARN    Per base sequence content       SRR8146944_2.fastq.gz
+WARN    Per sequence GC content SRR8146944_2.fastq.gz
+PASS    Per base N content      SRR8146944_2.fastq.gz
+PASS    Sequence Length Distribution    SRR8146944_2.fastq.gz
+PASS    Sequence Duplication Levels     SRR8146944_2.fastq.gz
+PASS    Overrepresented sequences       SRR8146944_2.fastq.gz
+PASS    Adapter Content SRR8146944_2.fastq.gz
+
+SRR8146951_1_fastqc.zip
+PASS    Basic Statistics        SRR8146951_1.fastq.gz
+PASS    Per base sequence quality       SRR8146951_1.fastq.gz
+PASS    Per sequence quality scores     SRR8146951_1.fastq.gz
+WARN    Per base sequence content       SRR8146951_1.fastq.gz
+WARN    Per sequence GC content SRR8146951_1.fastq.gz
+PASS    Per base N content      SRR8146951_1.fastq.gz
+PASS    Sequence Length Distribution    SRR8146951_1.fastq.gz
+PASS    Sequence Duplication Levels     SRR8146951_1.fastq.gz
+PASS    Overrepresented sequences       SRR8146951_1.fastq.gz
+PASS    Adapter Content SRR8146951_1.fastq.gz
+
+SRR8146951_2_fastqc.zip
+PASS    Basic Statistics        SRR8146951_2.fastq.gz
+PASS    Per base sequence quality       SRR8146951_2.fastq.gz
+PASS    Per sequence quality scores     SRR8146951_2.fastq.gz
+WARN    Per base sequence content       SRR8146951_2.fastq.gz
+WARN    Per sequence GC content SRR8146951_2.fastq.gz
+PASS    Per base N content      SRR8146951_2.fastq.gz
+WARN    Sequence Length Distribution    SRR8146951_2.fastq.gz
+PASS    Sequence Duplication Levels     SRR8146951_2.fastq.gz
+PASS    Overrepresented sequences       SRR8146951_2.fastq.gz
+PASS    Adapter Content SRR8146951_2.fastq.gz
+
+SRR8146952_1_fastqc.zip
+PASS    Basic Statistics        SRR8146952_1.fastq.gz
+PASS    Per base sequence quality       SRR8146952_1.fastq.gz
+PASS    Per sequence quality scores     SRR8146952_1.fastq.gz
+WARN    Per base sequence content       SRR8146952_1.fastq.gz
+PASS    Per sequence GC content SRR8146952_1.fastq.gz
+PASS    Per base N content      SRR8146952_1.fastq.gz
+PASS    Sequence Length Distribution    SRR8146952_1.fastq.gz
+PASS    Sequence Duplication Levels     SRR8146952_1.fastq.gz
+PASS    Overrepresented sequences       SRR8146952_1.fastq.gz
+PASS    Adapter Content SRR8146952_1.fastq.gz
+
+SRR8146952_2_fastqc.zip
+PASS    Basic Statistics        SRR8146952_2.fastq.gz
+PASS    Per base sequence quality       SRR8146952_2.fastq.gz
+PASS    Per sequence quality scores     SRR8146952_2.fastq.gz
+WARN    Per base sequence content       SRR8146952_2.fastq.gz
+PASS    Per sequence GC content SRR8146952_2.fastq.gz
+PASS    Per base N content      SRR8146952_2.fastq.gz
+WARN    Sequence Length Distribution    SRR8146952_2.fastq.gz
+PASS    Sequence Duplication Levels     SRR8146952_2.fastq.gz
+PASS    Overrepresented sequences       SRR8146952_2.fastq.gz
+PASS    Adapter Content SRR8146952_2.fastq.gz
+====================================================================================================
