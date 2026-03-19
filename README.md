@@ -1,4 +1,4 @@
-# Metabarcoding
+# Shotgun Metagenomics Statistical Analysis
 
 **METHODS**
 
