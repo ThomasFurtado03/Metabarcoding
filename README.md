@@ -1,5 +1,24 @@
 # Metabarcoding
 
+**METHODS**
+
+Raw shotgun metagenomic sequencing data were obtained from the European Nucleotide Archive (ENA) under study accession SRP126540, consisting of human gut microbiome samples form individuals with omnivore and vegan diets. Paried-end FASTQ files were downloaded directly using 'wget' form command line, A total of six samples (three omnivore, three vegan) were selected for analysis.
+
+Quality control of raw sequencing reads was performed using FastQC (v0.11.9), which assesses per-base sequence quality, GC content, duplication levels, and adapter contamination (Andrews, 2010). All samples passed quality control metrics, no trimming or filtering was applied prior to the downstream process.
+
+Taxonomic classification of sequencing reads was conducted using Kraken2 (v2.1.7.1), which is a k-mer based classification tool that assigns reads to a taxa based on exact matches to a reference database (Wood et al., 2019). A pre-built standard database (k2_standard_08_GB_20251015) was used. Kraken2 was run with a confidence threshold of 0.15 to reduce false-positive instances and paired-end reads were processed using 16 threads. The --memory-mapping option was not used due to executional issues and in the Narval (Compute Canada) computing environment.
+
+Abundance estimation at the species level was refine using Bracken (v3.0.1), which re-estimates species abundances form Kraken2 outputs, using Bayesian models of k-mer distributions (Lu et al., 2017). Bracken was run with a read length parameter of 150 base pairs ( -r 150) and the taxonomic level set to species (-l S).
+
+Kraken2 output reports were combined into a BIOM-format table using kraken-biom (v1.2.0), enabling integration with downstream statistical analysis tools. The BIOM table was imported into R using the phyloseq (v1.44.0) package for ecological and statistical analysis (McMurdie and Holmes, 2013).
+
+All downstream analyses were performed in R. Relative abundance transformation and taxonomic aggregation were done using phyloseq. Alpha diversity metrics, including Shannon and Simpson indices, were calculated using the 'plot-richness' function. Beta diversity was assessed using Bray-Curtis dissimilarity and visualized using principal coordinates analysis (PCoA) using the 'ordinate' and 'plot_ordination' functions.
+
+Statistical significance of the differences in microbial community composition between diet groups was evaluated using PERMANOVA from the 'vegan' (v2.6-4) package vis the 'adonis2' function (Oksanen et al., 2022).
+
+Differential abundance analysis was conducted using ANCOMBC2, which accounts for compositional bias in microbiome data (Lin and Peddada, 2020). Taxa were tested at the genus level (Rank 6), with significance determined by using Holm-adjusted p-values ( q < 0.05).
+
+All code for data collection, processing, analysis, and visualization is provided in this repository.
 
 **RESULTS**
 
