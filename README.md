@@ -12,13 +12,18 @@
 The taxonomic composition of gut microbiome samples varied across both omnivore and vegan groups, with phylum-level abundance dominated by Bacteroidotaand Bacillotain all samples (Figure 1). Although both groups displayed similar dominant phyla, variation in the relative abundance was observed between individual samples. This was particularly prevalent in the vegan group, where one sample showed a notable higher proportion of Bacillota. Minor phyla such as Actinomycetotaand Verrucomicrobiota were present at low relative abundances across all samples.
 
 
+
+
 ![Figure 2](Figures/Figure2.png)
 
 **Figure 2.** Alpha diversity of microbiome samples. Alpha diversity measures (Shannon and Simpson indices) for omnivore and vegan samples. Each point represents an individual sample, with boxplots indicating group distributions. Both metrics show overlapping distributions between groups, indicating similar within-sample diversity.
 
 
 
+
 Alpha diversity analysis revealed variability within both dietary groups, but there was no clear separation between omnivore and vegan samples (Figure 2). Shannon diversity values broadly separated within each group, this indicates that there are differences in both richness and evenness among individual samples. Simpson diversity showed a similar pattern, with overlapping distributions between groups. Together, these results suggest that within-sample microbial diversity is comparable between omnivore and vegan individuals in this dataset.
+
+
 
 
 ![Figure 3](Figures/Figure3.png)
@@ -28,6 +33,8 @@ Alpha diversity analysis revealed variability within both dietary groups, but th
 
 
 Beta diversity analysis using Bray-Curtis dissimilarity and principal coordinates analysis (PCoA) revealed partial clustering of samples by diet (Figure 3). The first principal coordinate explained 52.5% of the variation, with omnivore samples tending to cluster on one side of the axis, and the vegan samples clustering on the other. However, overlap between groups and outlier data points suggest substantial within-group variability. Statistical test using PERMANOVA showed that the diet explained 18% of the variation in the microbial composition (R^2^ = 0.18), but this effect was found not to be statistically significant (p = 0.5).
+
+
 
 
 ![Figure 4](Figures/Figure4.png)
