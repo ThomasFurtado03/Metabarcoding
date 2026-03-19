@@ -97,7 +97,9 @@ Notably, the absence of statistically significant differences does not imply tha
 In summary, the results found in this study demonstrate that while diet is an important factor which influences the gut microbiome, its effects may not always be detectable using small sample sizes and standard statistical approaches. The observed trends in composition and diversity are consistent with the literature, but the lack of statistical significance highlights the importance of considering data structure and analytical limitations for any studies concerning the microbiome.
 
 
-References
+
+
+**References**
 
 Andrews, S. (2010). *FastQC: A quality control tool for high throughput sequence data*.
 
