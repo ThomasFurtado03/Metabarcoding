@@ -4,6 +4,7 @@
 **RESULTS**
 
 ![Figure 1](Figures/Figure1.png)
+
 **Figure 1.** Taxonomic composition at the phylum level.Relative abundance of microbial taxa at the phylum level (Rank2) across omnivore and vegan samples. Samples are grouped by diet, with each bar representing a single sample. Bacteroidota and Bacillota dominate across all samples, with minor contributions from other phyla.
 
 The taxonomic composition of gut microbiome samples varied across both omnivore and vegan groups, with phylum-level abundance dominated by Bacteroidotaand Bacillotain all samples (Figure 1). Although both groups displayed similar dominant phyla, variation in the relative abundance was observed between individual samples. This was particularly prevalent in the vegan group, where one sample showed a notable higher proportion of Bacillota. Minor phyla such as Actinomycetotaand Verrucomicrobiota were present at low relative abundances across all samples.
