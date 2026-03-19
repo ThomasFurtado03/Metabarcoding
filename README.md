@@ -1,5 +1,18 @@
 # Shotgun Metagenomics Statistical Analysis
 
+**INTRODUCTION**
+
+The human gut microbiome is a complex and dynamic community of microorganisms which plays an essential role in health, including metabolism, immune regulation, and disease susceptibility. Advances in high-throughput sequencing technologies have allowed for detailed characterization of microbial communities, revealing substantial diversity within, and between individuals. However, this variability presents a major challenge in identifying the factors that shape the composition and function of the microbiome.
+
+Diet has emerged as one of the most influential and modifiable factors in gut microbiome structure. Both short-term and long-term dietary patters can alter microbial composition and activity. Dietary studies have demonstrated that shifts between plant-based and animal-based diets can rapidly change microbial community structure and metabolic output, with measurable effects occurring just within days (David et al., 2014). Similarly, long-term dietary habits have been associated with distinct microbial community types, or enterotypes, characterized by the relative abundance of taxa, such as *Bacteroides* and *Prevotella*, which are linked to protein- and carbohydrate-rich diets, respectively (Wu et al., 2011).
+
+Despite these associations, the extent  to which the diet alone explains variation in the gut microbiome remains unclear. Large population-level studies have shown that the composition of the microbiome is influenced by a wide range of host and environmental factors, alongside notable inter-individual variability even among healthy individuals (Falony et al., 2016). This variability can complicate diet-related patterns, particularly in studies with small sample sizes. To extend, while plant-based diets are said to have been associated with increased levels of fibre-degrading bacteria and beneficial metabolites (such as fatty acids), the differences between dietary groups are not always statistically significant (De Filippis et al., 2015).
+
+In conjunction with biological variability, the compositional nature of microbiome sequencing data may introduce analytical challenges. Due to the fact that sequencing measures relative rather than absolute abundances, changes in one taxon necessarily affect the proportions of others, which can lead to complication of statistical interpretations. As a result, specialized methods are required to accurately assess the differential abundance and community differences in microbiome datasets (Gloor et al., 2017).
+
+Given these considerations, the objective of this study was to evaluate the impact of diet (omnivore and vegan) on the composition, diversity, and differential abundance of the gut microbiome. More specifically, this study aimed to compare microbial community composition at the phylum level, assess the alpha and beta diversity between dietary groups, and identify any differentially abundant taxa using a statistical framework. By integrating multiple analytical approaches, this study seeks to determine if dietary habits produce any detectable differences in the gut microbiome, and if so, to what extent?
+
+
 **METHODS**
 
 Raw shotgun metagenomic sequencing data were obtained from the European Nucleotide Archive (ENA) under study accession SRP126540, consisting of human gut microbiome samples form individuals with omnivore and vegan diets. Paried-end FASTQ files were downloaded directly using 'wget' form command line, A total of six samples (three omnivore, three vegan) were selected for analysis.
@@ -83,3 +96,27 @@ Notably, the absence of statistically significant differences does not imply tha
 
 In summary, the results found in this study demonstrate that while diet is an important factor which influences the gut microbiome, its effects may not always be detectable using small sample sizes and standard statistical approaches. The observed trends in composition and diversity are consistent with the literature, but the lack of statistical significance highlights the importance of considering data structure and analytical limitations for any studies concerning the microbiome.
 
+
+References
+
+Andrews, S. (2010). *FastQC: A quality control tool for high throughput sequence data*.
+
+Wood, D. E., Lu, J., & Langmead, B. (2019). Improved metagenomic analysis with Kraken 2. *Genome Biology*, 20, 257.
+
+Lu, J., Breitwieser, F. P., Thielen, P., & Salzberg, S. L. (2017). Bracken: estimating species abundance in metagenomics data. *PeerJ Computer Science*, 3, e104.
+
+McMurdie, P. J., & Holmes, S. (2013). phyloseq: An R package for reproducible interactive analysis of microbiome census data. *PLoS ONE*, 8(4), e61217.
+
+Oksanen, J. et al. (2022). vegan: Community Ecology Package. R package.
+
+Lin, H., & Peddada, S. D. (2020). Analysis of compositions of microbiomes with bias correction. *Nature Communications*, 11, 3514.
+
+De Filippis, F., Pellegrini, N., Vannini, L., Jeffery, I. B., La Storia, A., Laghi, L., Serrazanetti, D. I., Di Cagno, R., Ferrocino, I., Lazzi, C., Turroni, S., Cocolin, L., Brigidi, P., Neviani, E., Gobbetti, M., O'Toole, P. W., & Ercolini, D. (2015). High-level adherence to a Mediterranean diet beneficially impacts the gut microbiota and associated metabolome. *Gut*, *65*(11), 1812--1821. https://doi.org/10.1136/gutjnl-2015-309957
+
+Wu, G. D., Chen, J., Hoffmann, C., Bittinger, K., Chen, Y.-Y., Keilbaugh, S. A., Bewtra, M., Knights, D., Walters, W. A., Knight, R., Sinha, R., Gilroy, E., Gupta, K., Baldassano, R., Nessel, L., Li, H., Bushman, F. D., & Lewis, J. D. (2011). Linking long-term dietary patterns with gut microbial enterotypes. *Science*, *334*(6052), 105--108. https://doi.org/10.1126/science.1208344
+
+Falony, G., Joossens, M., Vieira-Silva, S., Wang, J., Darzi, Y., Faust, K., Kurilshikov, A., Bonder, M. J., Valles-Colomer, M., Vandeputte, D., Tito, R. Y., Chaffron, S., Rymenans, L., Verspecht, C., De Sutter, L., Lima-Mendez, G., D'hoe, K., Jonckheere, K., Homola, D., ... Raes, J. (2016a). Population-level analysis of gut microbiome variation. *Science*, *352*(6285), 560--564. https://doi.org/10.1126/science.aad3503
+
+David, L. A., Maurice, C. F., Carmody, R. N., Gootenberg, D. B., Button, J. E., Wolfe, B. E., Ling, A. V., Devlin, A. S., Varma, Y., Fischbach, M. A., Biddinger, S. B., Dutton, R. J., & Turnbaugh, P. J. (2014). Diet rapidly and reproducibly alters the human gut microbiome. *Nature*, *505*(7484), 559--563. <https://doi.org/10.1038/nature12820>
+
+Gloor, G. B., Macklaim, J. M., Pawlowsky-Glahn, V., & Egozcue, J. J. (2017). Microbiome datasets are compositional: And this is not optional. *Frontiers in Microbiology*, *8*. https://doi.org/10.3389/fmicb.2017.02224
